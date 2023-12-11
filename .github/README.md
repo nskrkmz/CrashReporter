@@ -1,4 +1,5 @@
 # Nesco - CrashReporter
+[![openupm](https://img.shields.io/npm/v/com.nesco.crashreporter?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.nesco.crashreporter/)  
 
 This tool is employed to swiftly detect errors occurring within Unity projects and to save detailed reports of these
 errors to a remote database. It facilitates the quick collection of errors when testing your game on
