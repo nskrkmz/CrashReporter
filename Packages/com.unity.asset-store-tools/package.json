@@ -1,8 +1,0 @@
-{
-  "name": "com.nesco.crashreporter",
-  "displayName": "Crash Reporter",
-  "version": "1.0.0",
-  "unity": "2019.4",
-  "description": "This tool is employed to swiftly detect errors occurring within Unity projects and to save detailed reports of these errors to a remote database.",
-  "type": "Tool"
-}

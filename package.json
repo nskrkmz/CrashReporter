@@ -1,0 +1,9 @@
+{
+    "name": "com.nesco.crashreporter",
+    "displayName": "Crash Reporter",
+    "version": "1.0.1",
+    "documentationUrl": "https://github.com/nskrkmz/CrashReporter",
+    "changelogUrl": "https://github.com/nskrkmz/CrashReporter/releases",
+    "licensesUrl": "https://github.com/yasirkula/UnityAssetUsageDetector/blob/master/LICENSE.txt",
+    "description": "This tool is employed to swiftly detect errors occurring within Unity projects and to save detailed reports of these errors to a remote redis database. (Suitable for beta testing and demo)"
+  }
