@@ -99,10 +99,8 @@ namespace Nesco.CrashReporter
 
         private string GenerateReportId()
         {
-            // Rastgele sayý ve karakterlerin kullanýlacaðý bir karakter dizisi oluþtur
             string characters = "ABCDEFGHIJKLMNOabcdefghijklmnopqrstuvwxyzPQRSTUVWXYZ0123456789_|@#$-";
-
-            // Rastgele sayý ve karakterlerden oluþan 16 karakterli bir ID oluþtur
+            
             System.Random random = new System.Random();
             char[] idArray = new char[16];
 
@@ -110,8 +108,7 @@ namespace Nesco.CrashReporter
             {
                 idArray[i] = characters[random.Next(characters.Length)];
             }
-
-            // Char dizisini string'e dönüþtür
+            
             string reportId = new string(idArray);
 
             return reportId;
