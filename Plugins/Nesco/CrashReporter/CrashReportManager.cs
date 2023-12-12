@@ -10,7 +10,7 @@ using System;
 namespace Nesco.CrashReporter
 {
     [RequireComponent(typeof(DBManager))]
-    public class CrashReporter : MonoBehaviour
+    public class CrashReportManager : MonoBehaviour
     {
         private DBConfig _dBConfig;
         [SerializeField] private bool _runTest;

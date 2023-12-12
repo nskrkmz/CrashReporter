@@ -11,8 +11,8 @@ namespace Nesco.CrashReporter.Editor
         public static void ShowWindow()
         {
             GameObject reporterObj = new GameObject();
-            reporterObj.name = "CrashReporter";
-            reporterObj.AddComponent<CrashReporter>();
+            reporterObj.name = "CrashReportManager";
+            reporterObj.AddComponent<CrashReportManager>();
         }
     }
 }
