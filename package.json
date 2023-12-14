@@ -1,7 +1,7 @@
 {
     "name": "com.nesco.crashreporter",
     "displayName": "Crash Reporter",
-    "version": "1.0.1",
+    "version": "1.1.0-beta",
     "documentationUrl": "https://github.com/nskrkmz/CrashReporter",
     "changelogUrl": "https://github.com/nskrkmz/CrashReporter/releases",
     "licensesUrl": "https://github.com/nskrkmz/CrashReporter/blob/master/LICENSE.txt",
