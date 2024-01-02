@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -5,7 +6,6 @@ using Nesco.CrashReporter.DBCore;
 using Newtonsoft.Json;
 
 using static Nesco.CrashReporter.DBCore.DBConfiguration;
-using System;
 
 namespace Nesco.CrashReporter
 {
@@ -22,6 +22,21 @@ namespace Nesco.CrashReporter
 
             CheckAndSetUpTheTest();
         }
+        private void CheckAndSetUpTheTest()
+        {
+            if (_runTest)
+            {
+                if (!gameObject.GetComponent<Test>())
+                    gameObject.AddComponent<Test>();
+                else
+                    gameObject.GetComponent<Test>().enabled = true;
+            }
+            else
+            {
+                if (gameObject.GetComponent<Test>())
+                    gameObject.GetComponent<Test>().enabled = false;
+            }
+        }
 
         private void Start()
         {
@@ -34,6 +49,13 @@ namespace Nesco.CrashReporter
                 Debug.LogWarning(ex, gameObject);
             }
         }
+
+        public void SendCustomReport(string tableName, string reportId, string reportText) => StartCoroutine(SendCustomReportToServerRoutine(tableName, reportId, reportText));
+        public void SendCustomReport(string tableName, string reportText) => StartCoroutine(SendCustomReportToServerRoutine(tableName, reportText));
+        public void SendCustomReport(string reportText) => StartCoroutine(SendCustomReportToServerRoutine(reportText));
+        public void SendCustomReport(string tableName, string reportId, string reportText, Action<UnityWebRequest.Result> callback) => StartCoroutine(SendCustomReportToServerRoutine(tableName, reportId, reportText, callback));
+        public void SendCustomReport(string tableName, string reportText, Action<UnityWebRequest.Result> callback) => StartCoroutine(SendCustomReportToServerRoutine(tableName, reportText, callback));
+        public void SendCustomReport(string reportText, Action<UnityWebRequest.Result> callback) => StartCoroutine(SendCustomReportToServerRoutine(reportText, callback));
 
         private void HandleLog(string logString, string stackTrace, LogType type)
         {
@@ -81,26 +103,107 @@ namespace Nesco.CrashReporter
             }
         }
 
-        private void CheckAndSetUpTheTest()
+
+        IEnumerator SendCustomReportToServerRoutine(string tableName, string reportId, string reportText)
         {
-            if (_runTest)
+
+            using (UnityWebRequest reportSetRequest = UnityWebRequest.Post(_dBConfig.RestURL + $"/hset/{tableName}/{reportId}/", $"{reportText}"))
             {
-                if (!gameObject.GetComponent<Test>())
-                    gameObject.AddComponent<Test>();
-                else
-                    gameObject.GetComponent<Test>().enabled = true;
+                reportSetRequest.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(reportText));
+                reportSetRequest.SetRequestHeader(_dBConfig.AuthorizationHeaderName, _dBConfig.AuthorizationHeaderValue);
+                reportSetRequest.SetRequestHeader("Content-Type", "application/json");
+
+                yield return reportSetRequest.SendWebRequest();
+
+                if (reportSetRequest.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.Log(" reportSetRequest => " + reportSetRequest.error);
+                }
             }
-            else
+        }
+        IEnumerator SendCustomReportToServerRoutine(string tableName, string reportText)
+        {
+            string reportId = GenerateReportId();
+            using (UnityWebRequest reportSetRequest = UnityWebRequest.Post(_dBConfig.RestURL + $"/hset/{tableName}/{reportId}/", $"{reportText}"))
             {
-                if (gameObject.GetComponent<Test>())
-                    gameObject.GetComponent<Test>().enabled = false;
+                reportSetRequest.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(reportText));
+                reportSetRequest.SetRequestHeader(_dBConfig.AuthorizationHeaderName, _dBConfig.AuthorizationHeaderValue);
+                reportSetRequest.SetRequestHeader("Content-Type", "application/json");
+
+                yield return reportSetRequest.SendWebRequest();
+
+                if (reportSetRequest.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.Log(" reportSetRequest => " + reportSetRequest.error);
+                }
+            }
+        }
+        IEnumerator SendCustomReportToServerRoutine(string reportText)
+        {
+            string reportId = GenerateReportId();
+            string reportKey = "CustomReport";
+            using (UnityWebRequest reportSetRequest = UnityWebRequest.Post(_dBConfig.RestURL + $"/hset/{reportKey}/{reportId}/", $"{reportText}"))
+            {
+                reportSetRequest.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(reportText));
+                reportSetRequest.SetRequestHeader(_dBConfig.AuthorizationHeaderName, _dBConfig.AuthorizationHeaderValue);
+                reportSetRequest.SetRequestHeader("Content-Type", "application/json");
+
+                yield return reportSetRequest.SendWebRequest();
+
+                if (reportSetRequest.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.Log(" reportSetRequest => " + reportSetRequest.error);
+                }
+            }
+        }
+        IEnumerator SendCustomReportToServerRoutine(string tableName, string reportId, string reportText, Action<UnityWebRequest.Result> callback)
+        {
+
+            using (UnityWebRequest reportSetRequest = UnityWebRequest.Post(_dBConfig.RestURL + $"/hset/{tableName}/{reportId}/", $"{reportText}"))
+            {
+                reportSetRequest.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(reportText));
+                reportSetRequest.SetRequestHeader(_dBConfig.AuthorizationHeaderName, _dBConfig.AuthorizationHeaderValue);
+                reportSetRequest.SetRequestHeader("Content-Type", "application/json");
+
+                yield return reportSetRequest.SendWebRequest();
+
+                callback(reportSetRequest.result);
+            }
+        }
+        IEnumerator SendCustomReportToServerRoutine(string tableName, string reportText, Action<UnityWebRequest.Result> callback)
+        {
+            string reportId = GenerateReportId();
+            using (UnityWebRequest reportSetRequest = UnityWebRequest.Post(_dBConfig.RestURL + $"/hset/{tableName}/{reportId}/", $"{reportText}"))
+            {
+                reportSetRequest.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(reportText));
+                reportSetRequest.SetRequestHeader(_dBConfig.AuthorizationHeaderName, _dBConfig.AuthorizationHeaderValue);
+                reportSetRequest.SetRequestHeader("Content-Type", "application/json");
+
+                yield return reportSetRequest.SendWebRequest();
+
+                callback(reportSetRequest.result);
+            }
+        }
+        IEnumerator SendCustomReportToServerRoutine(string reportText, Action<UnityWebRequest.Result> callback)
+        {
+            string reportId = GenerateReportId();
+            string reportKey = "CustomReport";
+            using (UnityWebRequest reportSetRequest = UnityWebRequest.Post(_dBConfig.RestURL + $"/hset/{reportKey}/{reportId}/", $"{reportText}"))
+            {
+                reportSetRequest.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(reportText));
+                reportSetRequest.SetRequestHeader(_dBConfig.AuthorizationHeaderName, _dBConfig.AuthorizationHeaderValue);
+                reportSetRequest.SetRequestHeader("Content-Type", "application/json");
+
+                yield return reportSetRequest.SendWebRequest();
+
+                callback(reportSetRequest.result);
             }
         }
 
         private string GenerateReportId()
         {
             string characters = "ABCDEFGHIJKLMNOabcdefghijklmnopqrstuvwxyzPQRSTUVWXYZ0123456789_|@#$-";
-            
+
             System.Random random = new System.Random();
             char[] idArray = new char[16];
 
@@ -108,7 +211,7 @@ namespace Nesco.CrashReporter
             {
                 idArray[i] = characters[random.Next(characters.Length)];
             }
-            
+
             string reportId = new string(idArray);
 
             return reportId;
