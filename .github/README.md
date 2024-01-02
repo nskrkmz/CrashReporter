@@ -145,9 +145,9 @@ private void Foo()
 // Create referance
 [SerializeField] private CrashReportManager _reportManager;
 
-Action<UnityWebRequest.Result> RequestCallback = (request) =>
+Action<UnityWebRequest.Result> RequestCallback = (result) =>
 {
-    if(request.result != UnityWebRequest.Result.Success)
+    if(result != UnityWebRequest.Result.Success)
     {
         if(CheckInternetConnection())
         {
