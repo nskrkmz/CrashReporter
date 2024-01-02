@@ -20,6 +20,48 @@ graph TD;
     F(...)
     E(Client_N)-->|hset reportID, reportText|Z;
 ```
+### Install via package manager
+
+Please follow the instrustions:
+* open **Edit/Project Settings/Package Manager**
+* add a new Scoped Registry (or edit the existing OpenUPM entry)
+```
+NAME => package.openupm.com
+URL => https://package.openupm.com
+SCOPE(S) => com.nesco.crashreporter
+```
+* click **Save** or **Apply**
+* open **Window/Package Manager**
+* select Add package by name... or Add package from git URL...
+* paste **com.nesco.crashreporter** into name or __https://github.com/nskrkmz/CrashReporter.git__ into git URL
+* paste **1.1.0-beta** into version
+* click **Add**
+  
+#### Alternatively, merge the snippet to Packages/manifest.json
+```json
+{
+    "scopedRegistries": [
+        {
+            "name": "package.openupm.com",
+            "url": "https://package.openupm.com",
+            "scopes": [
+                "com.nesco.crashreporter"
+            ]
+        }
+    ],
+    "dependencies": {
+        "com.nesco.crashreporter": "1.1.0-beta"
+    }
+}
+
+```
+#### Install via command-line interface
+```shell
+$ openupm add com.nesco.crashreporter
+```
+
+
+
 ### SETUP
 To be able to use Nesco - CrashReporter in Unity, you don't need to install an external package.
 However, since it writes crash reports to a remote database, the setup is a two-side process.
