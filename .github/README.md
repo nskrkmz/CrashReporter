@@ -95,7 +95,7 @@ However, since it writes crash reports to a remote database, the setup is a two-
 * Fast communication with Database
 * Unlike other Redis databases, it provides durable storage capability. (https://upstash.com/docs/redis/features/durability)
     
-### CRASH REPORTER INCLUDES
+### DEFAULT CRASH REPORT INCLUDES
 
 * PlayerID
 * Message
@@ -122,3 +122,54 @@ However, since it writes crash reports to a remote database, the setup is a two-
 * SupportsLocationService
 * SupportsRayTracing
 * SupportsVibration
+
+### SEND CUSTOM REPORTS
+
+* Completely independent of reportable unhandled log occurrences, you can send a report from any part of your code using one of the following options.
+
+```csharp
+// Create referance
+[SerializeField] private CrashReportManager _reportManager;
+
+private void Foo()
+{
+    .
+    .
+    .
+    _reportManager.SendCustomReport("EasterEggs", EasterEgg.ID, playerID)
+}
+
+```
+
+```csharp
+// Create referance
+[SerializeField] private CrashReportManager _reportManager;
+
+Action<UnityWebRequest.Result> RequestCallback = (request) =>
+{
+    if(request.result != UnityWebRequest.Result.Success)
+    {
+        if(CheckInternetConnection())
+        {
+            UIManager.instance.PushPopUp(PopUpType.Request, "Please activate your internet connection.");
+        }
+        .
+        .
+        .
+    }
+    .
+    .
+    .
+            
+};
+
+private void Foo()
+{
+    .
+    .
+    .
+    _reportManager.SendCustomReport("EasterEggs", EasterEgg.ID, playerID, RequestCallback)
+}
+
+```
+
